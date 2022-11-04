@@ -6,6 +6,7 @@
    Well.
 
    Copyright (C) 2003-2006 by Michal Zalewski <lcamtuf@coredump.cx>
+   Copyright (C) 2022 by Nikhil Nayak <nikhil.nayak@exalens.com>
 
 */
 
@@ -33,6 +34,14 @@
 /* Stupid ECN flags: */
 #define TH_ECE  0x40
 #define TH_CWR  0x80
+
+struct ethernet_h {
+     unsigned char dest_address[6];
+     unsigned char src_address[6];
+     // if value < 1500(max allowed frame size); specifies length - ver802.2
+     // else value > 1536; specifies which protocol is encapsulated in the payload - Ethernet II framing
+     unsigned char ether_type[2];
+};
 
 struct ip_header {
   _u8  ihl,	/* IHL */

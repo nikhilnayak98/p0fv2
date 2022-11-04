@@ -7,6 +7,7 @@
   get up. You're the sucker."
 
   (C) Copyright 2000-2006 by Michal Zalewski <lcamtuf@coredump.cx>
+  (C) Copyright 2022 by Nikhil Nayak <nikhil.nayak@exalens.com>
 
   WIN32 port (C) Copyright 2003-2004 by Michael A. Davis <mike@datanerds.net>
              (C) Copyright 2003-2004 by Kirby Kuehl <kkuehl@cisco.com>
@@ -790,7 +791,7 @@ static void put_date(struct timeval tval) {
 
       if (x[strlen(x)-1]=='\n') x[strlen(x)-1]=0;
 
-      printf("<%s> ",x);
+      printf("%s",x);
 
       break;
 
@@ -804,7 +805,7 @@ static void put_date(struct timeval tval) {
 
       tmval = gmtime(&tval.tv_sec);
 
-      printf("<%04u-%02u-%02uT%02u:%02u:%02u.%06uZ> ",
+      printf("%04u-%02u-%02uT%02u:%02u:%02u.%06uZ",
              tmval->tm_year + 1900, tmval->tm_mon + 1, tmval->tm_mday,
              tmval->tm_hour, tmval->tm_min, tmval->tm_sec, 
              (_u32)tval.tv_usec);
@@ -950,7 +951,8 @@ _u32 matched_packets;
 static inline void find_match(_u16 tot,_u8 df,_u8 ttl,_u16 wss,_u32 src,
                        _u32 dst,_u16 sp,_u16 dp,_u8 ocnt,_u8* op,_u16 mss,
                        _u8 wsc,_u32 tstamp,_u8 tos,_u32 quirks,_u8 ecn,
-                       _u8* pkt,_u8 plen,_u8* pay, struct timeval pts) {
+                       _u8* pkt,_u8 plen,_u8* pay, struct timeval pts,
+                       unsigned char src_address[], unsigned char dest_address[]) {
 
   _u32 j;
   _u8* a;
@@ -1052,14 +1054,39 @@ continue_fuzzy:
     }
 
     if (!no_known) {
-
+      printf("{");
+      printf("\"version\":\"p0fv2\",");
+      printf("\"ts\":\"");
       if (add_timestamp) put_date(pts);
       a=(_u8*)&src;
-
-      printf("%d.%d.%d.%d%s:%d - %s ",a[0],a[1],a[2],a[3],grab_name(a),
-             sp,p->os);
-
-      if (!no_osdesc) printf("%s ",p->desc);
+       printf("\",\"mac\":\"");
+      for (int j=0;j<6;j++) {
+        if (j == 5)
+          printf("%02x", src_address[j]);
+        else
+          printf("%02x:", src_address[j]);
+      }
+      printf("\",\"ip_address\":\"%d.%d.%d.%d\",",a[0],a[1],a[2],a[3]);
+      printf("\"port\":\"%d\",", sp);
+      printf("\"sig_proto\":\"tcp\",");
+      //printf(" %d.%d.%d.%d%s:%d - %s ",a[0],a[1],a[2],a[3],grab_name(a),sp,p->os);
+      if (ack_mode)
+        printf("\"sig_type\":\"syn+ack\",");
+      else
+        printf("\"sig_type\":\"syn\",");
+      
+      if (!no_osdesc)
+        printf("\"os\":\"%s %s\",", p->os, p->desc);
+      else
+        printf("\"os\":\"%s\",", p->os);
+      printf("\"model\":null,");
+      printf("\"vendor\":null,");
+      printf("\"firmware\":null,");
+      printf("\"device_type\":null,");
+      printf("\"device_attribute\":null,");
+      printf("\"sig\":\"");
+      display_signature(ttl,tot,orig_df,op,ocnt,mss,wss,wsc,tstamp,quirks);
+      printf("\"}");
 
       if (nat == 1) printf("(NAT!) "); else
         if (nat == 2) printf("(NAT2!) ");
@@ -1075,7 +1102,7 @@ continue_fuzzy:
       if (fuzzy_now) printf("[FUZZY] ");
 
       if (p->no_detail) printf("* "); else
-        if (tstamp) printf("(up: %d hrs) ",tstamp/360000);
+        if (tstamp) //printf("(up: %d hrs) ",tstamp/360000);
 
       if (always_sig || (p->generic && !no_unknown)) {
 
@@ -1162,13 +1189,34 @@ continue_search:
   }
 
   if (!no_unknown) { 
+    printf("{");
+    printf("\"version\":\"p0fv2\",");
+    printf("\"ts\":\"");
     if (add_timestamp) put_date(pts);
+    printf("\",\"mac\":\"");
     a=(_u8*)&src;
-    printf("%d.%d.%d.%d%s:%d - UNKNOWN [",a[0],a[1],a[2],a[3],grab_name(a),sp);
-
+    for (int j=0;j<6;j++) {
+      if (j == 5)
+        printf("%02x", src_address[j]);
+      else
+        printf("%02x:", src_address[j]);
+    }
+    printf("\",\"ip_address\":\"%d.%d.%d.%d\",",a[0],a[1],a[2],a[3]);
+    printf("\"port\":\"%d\",", sp);
+    printf("\"sig_proto\":\"tcp\",");
+    if (ack_mode)
+      printf("\"sig_type\":\"syn+ack\",");
+    else
+      printf("\"sig_type\":\"syn\",");
+    printf("\"os\":null,");
+    printf("\"model\":null,");
+    printf("\"vendor\":null,");
+    printf("\"firmware\":null,");
+    printf("\"device_type\":null,");
+    printf("\"device_attribute\":null,");
+    printf("\"sig\":\"");
     display_signature(ttl,tot,orig_df,op,ocnt,mss,wss,wsc,tstamp,quirks);
-
-    printf(":?:?] ");
+    printf("\"}");
 
     if (rst_mode) {
 
@@ -1221,7 +1269,7 @@ continue_search:
       if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
     }
 
-    if (tstamp) printf("(up: %d hrs) ",tstamp/360000);
+    if (tstamp) //printf("(up: %d hrs) ",tstamp/360000);
 
     if (!no_extra) {
       a=(_u8*)&dst;
@@ -1251,6 +1299,7 @@ continue_search:
 
 
 static void parse(_u8* none, struct pcap_pkthdr *pph, _u8* packet) {
+  struct ethernet_h *etherneth;
   struct ip_header *iph;
   struct tcp_header *tcph;
   struct timeval pts;
@@ -1273,6 +1322,8 @@ static void parse(_u8* none, struct pcap_pkthdr *pph, _u8* packet) {
   if (pph->len <= PACKET_SNAPLEN) end_ptr = packet + pph->len;
     else end_ptr = packet + PACKET_SNAPLEN;
 
+  etherneth = (struct ethernet_h *)(packet);
+  
   iph = (struct ip_header*)(packet+header_len);
 
   if (use_vlan && iph->ihl == 0x00) 
@@ -1479,7 +1530,9 @@ end_parsing:
      /* pkt */   (_u8*)iph,
      /* len */   end_ptr - (_u8*)iph,
      /* pay */   pay,
-     /* ts */    pts
+     /* ts */    pts,
+     /* src */   etherneth->src_address,
+     /* dst */   etherneth->dest_address
   );
 
 #ifdef DEBUG_EXTRAS
