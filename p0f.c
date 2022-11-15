@@ -791,13 +791,15 @@ static void put_date(struct timeval tval) {
 
       if (x[strlen(x)-1]=='\n') x[strlen(x)-1]=0;
 
-      printf("%s",x);
+      //printf("%s",x);
+
+      printf("%u.%06u", (_u32)tval.tv_sec, (_u32)tval.tv_usec);
 
       break;
 
     case 3: /* seconds since the epoch */
 
-      printf("<%u.%06u> ", (_u32)tval.tv_sec, (_u32)tval.tv_usec);
+      printf("%u.%06u", (_u32)tval.tv_sec, (_u32)tval.tv_usec);
       break;
 
     case 4: /* RFC3339 */
@@ -805,10 +807,12 @@ static void put_date(struct timeval tval) {
 
       tmval = gmtime(&tval.tv_sec);
 
-      printf("%04u-%02u-%02uT%02u:%02u:%02u.%06uZ",
-             tmval->tm_year + 1900, tmval->tm_mon + 1, tmval->tm_mday,
-             tmval->tm_hour, tmval->tm_min, tmval->tm_sec, 
-             (_u32)tval.tv_usec);
+      printf("%u.%06u", (_u32)tval.tv_sec, (_u32)tval.tv_usec);
+
+      // printf("%04u-%02u-%02uT%02u:%02u:%02u.%06uZ",
+      //        tmval->tm_year + 1900, tmval->tm_mon + 1, tmval->tm_mday,
+      //        tmval->tm_hour, tmval->tm_min, tmval->tm_sec, 
+      //        (_u32)tval.tv_usec);
 
       break;
 
@@ -1054,12 +1058,10 @@ continue_fuzzy:
     }
 
     if (!no_known) {
-      printf("{");
-      printf("\"version\":\"p0fv2\",");
-      printf("\"ts\":\"");
+      printf("{\"ts\":");
       if (add_timestamp) put_date(pts);
+      printf(",\"version\":\"p0fv2\",\"mac\":\"");
       a=(_u8*)&src;
-       printf("\",\"mac\":\"");
       for (int j=0;j<6;j++) {
         if (j == 5)
           printf("%02x", src_address[j]);
@@ -1067,8 +1069,7 @@ continue_fuzzy:
           printf("%02x:", src_address[j]);
       }
       printf("\",\"ip_address\":\"%d.%d.%d.%d\",",a[0],a[1],a[2],a[3]);
-      printf("\"port\":\"%d\",", sp);
-      printf("\"sig_proto\":\"tcp\",");
+      printf("\"port\":\"%d\",\"sig_proto\":\"tcp\",", sp);
       //printf(" %d.%d.%d.%d%s:%d - %s ",a[0],a[1],a[2],a[3],grab_name(a),sp,p->os);
       if (ack_mode)
         printf("\"sig_type\":\"syn+ack\",");
@@ -1079,12 +1080,7 @@ continue_fuzzy:
         printf("\"os\":\"%s %s\",", p->os, p->desc);
       else
         printf("\"os\":\"%s\",", p->os);
-      printf("\"model\":null,");
-      printf("\"vendor\":null,");
-      printf("\"firmware\":null,");
-      printf("\"device_type\":null,");
-      printf("\"device_attribute\":null,");
-      printf("\"sig\":\"");
+      printf("\"model\":null,\"vendor\":null,\"firmware\":null,\"device_type\":null,\"device_attribute\":null,\"sig\":\"");
       display_signature(ttl,tot,orig_df,op,ocnt,mss,wss,wsc,tstamp,quirks);
       printf("\"}");
 
@@ -1189,11 +1185,9 @@ continue_search:
   }
 
   if (!no_unknown) { 
-    printf("{");
-    printf("\"version\":\"p0fv2\",");
-    printf("\"ts\":\"");
+    printf("{\"ts\":");
     if (add_timestamp) put_date(pts);
-    printf("\",\"mac\":\"");
+    printf(",\"version\":\"p0fv2\",\"mac\":\"");
     a=(_u8*)&src;
     for (int j=0;j<6;j++) {
       if (j == 5)
@@ -1202,19 +1196,12 @@ continue_search:
         printf("%02x:", src_address[j]);
     }
     printf("\",\"ip_address\":\"%d.%d.%d.%d\",",a[0],a[1],a[2],a[3]);
-    printf("\"port\":\"%d\",", sp);
-    printf("\"sig_proto\":\"tcp\",");
+    printf("\"port\":\"%d\",\"sig_proto\":\"tcp\",", sp);
     if (ack_mode)
       printf("\"sig_type\":\"syn+ack\",");
     else
       printf("\"sig_type\":\"syn\",");
-    printf("\"os\":null,");
-    printf("\"model\":null,");
-    printf("\"vendor\":null,");
-    printf("\"firmware\":null,");
-    printf("\"device_type\":null,");
-    printf("\"device_attribute\":null,");
-    printf("\"sig\":\"");
+    printf("\"os\":null,\"model\":null,\"vendor\":null,\"firmware\":null,\"device_type\":null,\"device_attribute\":null,\"sig\":\"");
     display_signature(ttl,tot,orig_df,op,ocnt,mss,wss,wsc,tstamp,quirks);
     printf("\"}");
 
@@ -1933,4 +1920,5 @@ int main(int argc,char** argv) {
   return 0;
 
 }
+
 
