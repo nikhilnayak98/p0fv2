@@ -6,7 +6,7 @@
    Well.
 
    Copyright (C) 2003-2006 by Michal Zalewski <lcamtuf@coredump.cx>
-   Copyright (C) 2022 by Nikhil Nayak <nikhil.nayak@exalens.com>
+   Copyright (C) 2022 by Exalens <support@exalens.com>
 
 */
 
