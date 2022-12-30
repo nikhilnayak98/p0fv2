@@ -7,7 +7,7 @@
   get up. You're the sucker."
 
   (C) Copyright 2000-2006 by Michal Zalewski <lcamtuf@coredump.cx>
-  (C) Copyright 2022 by Nikhil Nayak <nikhil.nayak@exalens.com>
+  (C) Copyright 2022 by Exalens <support@exalens.com>
 
   WIN32 port (C) Copyright 2003-2004 by Michael A. Davis <mike@datanerds.net>
              (C) Copyright 2003-2004 by Kirby Kuehl <kkuehl@cisco.com>
