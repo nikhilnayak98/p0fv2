@@ -1084,15 +1084,15 @@ continue_fuzzy:
       display_signature(ttl,tot,orig_df,op,ocnt,mss,wss,wsc,tstamp,quirks);
       printf("\"}");
 
-      if (nat == 1) //printf("(NAT!) "); else
-        if (nat == 2) //printf("(NAT2!) ");
+      // if (nat == 1) printf("(NAT!) "); else
+      //   if (nat == 2) printf("(NAT2!) ");
 
       //if (ecn) printf("(ECN) ");
       //if (orig_df ^ df) printf("(firewall!) ");
 
-      if (tos) {
-        //if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
-      }
+      // if (tos) {
+      //   if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
+      // }
 
       //if (p->generic) printf("[GENERIC] ");
       //if (fuzzy_now) printf("[FUZZY] ");
@@ -1103,7 +1103,7 @@ continue_fuzzy:
       if (always_sig || (p->generic && !no_unknown)) {
 
         if (!mode_oneline) printf("\n  ");
-        printf("Signature: [");
+        //printf("Signature: [");
 
         display_signature(ttl,tot,orig_df,op,ocnt,mss,wss,wsc,tstamp,quirks);
 
@@ -1116,16 +1116,16 @@ continue_fuzzy:
 
       if (!no_extra && !p->no_detail) {
 	a=(_u8*)&dst;
-        if (!mode_oneline) printf("\n  ");
+        if (!mode_oneline) //printf("\n  ");
 
-        if (fuzzy_now) 
-          printf("-> %d.%d.%d.%d%s:%d (link: %s)",
-               a[0],a[1],a[2],a[3],grab_name(a),dp,
-               lookup_link(mss,1));
-        else
-          printf("-> %d.%d.%d.%d%s:%d (distance %d, link: %s)",
-                 a[0],a[1],a[2],a[3],grab_name(a),dp,p->ttl - ttl,
-                 lookup_link(mss,1));
+        // if (fuzzy_now) 
+        //   printf("-> %d.%d.%d.%d%s:%d (link: %s)",
+        //        a[0],a[1],a[2],a[3],grab_name(a),dp,
+        //        lookup_link(mss,1));
+        // else
+        //   printf("-> %d.%d.%d.%d%s:%d (distance %d, link: %s)",
+        //          a[0],a[1],a[2],a[3],grab_name(a),dp,p->ttl - ttl,
+        //          lookup_link(mss,1));
       }
 
       if (pay && payload_dump) dump_payload(pay,plen - (pay - pkt));
@@ -1142,11 +1142,11 @@ continue_fuzzy:
      a=(_u8*)&src;
      if (sc > masq_thres) {
        if (add_timestamp) put_date(pts);
-       printf(">> Masquerade at %u.%u.%u.%u%s: indicators at %d%%.",
-              a[0],a[1],a[2],a[3],grab_name(a),sc);
-       if (!mode_oneline) putchar('\n'); else printf(" -- ");
+      //  printf(">> Masquerade at %u.%u.%u.%u%s: indicators at %d%%.",
+      //         a[0],a[1],a[2],a[3],grab_name(a),sc);
+       //if (!mode_oneline) putchar('\n'); else printf(" -- ");
        if (masq_flags) {
-         printf("   Flags: ");
+         //printf("   Flags: ");
          p0f_descmasq();
          putchar('\n');
        }
@@ -1260,9 +1260,9 @@ continue_search:
 
     if (!no_extra) {
       a=(_u8*)&dst;
-      if (!mode_oneline) printf("\n  ");
-      printf("-> %d.%d.%d.%d%s:%d (link: %s)",a[0],a[1],a[2],a[3],
-	       grab_name(a),dp,lookup_link(mss,1));
+      // if (!mode_oneline) printf("\n  ");
+      // printf("-> %d.%d.%d.%d%s:%d (link: %s)",a[0],a[1],a[2],a[3],
+	    //    grab_name(a),dp,lookup_link(mss,1));
     }
 
     if (use_cache)
