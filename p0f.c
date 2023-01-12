@@ -1247,14 +1247,14 @@ continue_search:
 
     }
 
-    if (nat == 1)// printf("(NAT!) ");
-      else if (nat == 2) //printf("(NAT2!) ");
+    // if (nat == 1)printf("(NAT!) ");
+    //   else if (nat == 2) printf("(NAT2!) ");
 
     //if (ecn) printf("(ECN) ");
 
-    if (tos) {
-      //if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
-    }
+    // if (tos) {
+    //   if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
+    // }
 
     //if (tstamp) printf("(up: %d hrs) ",tstamp/360000);
 
