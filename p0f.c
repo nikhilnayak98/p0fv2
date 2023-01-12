@@ -1084,21 +1084,21 @@ continue_fuzzy:
       display_signature(ttl,tot,orig_df,op,ocnt,mss,wss,wsc,tstamp,quirks);
       printf("\"}");
 
-      if (nat == 1) printf("(NAT!) "); else
-        if (nat == 2) printf("(NAT2!) ");
+      if (nat == 1) //printf("(NAT!) "); else
+        if (nat == 2) //printf("(NAT2!) ");
 
-      if (ecn) printf("(ECN) ");
-      if (orig_df ^ df) printf("(firewall!) ");
+      //if (ecn) printf("(ECN) ");
+      //if (orig_df ^ df) printf("(firewall!) ");
 
       if (tos) {
-        if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
+        //if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
       }
 
-      if (p->generic) printf("[GENERIC] ");
-      if (fuzzy_now) printf("[FUZZY] ");
+      //if (p->generic) printf("[GENERIC] ");
+      //if (fuzzy_now) printf("[FUZZY] ");
 
-      if (p->no_detail) printf("* "); else
-        if (tstamp) //printf("(up: %d hrs) ",tstamp/360000);
+      //if (p->no_detail) printf("* "); else
+        //if (tstamp) //printf("(up: %d hrs) ",tstamp/360000);
 
       if (always_sig || (p->generic && !no_unknown)) {
 
@@ -1107,10 +1107,10 @@ continue_fuzzy:
 
         display_signature(ttl,tot,orig_df,op,ocnt,mss,wss,wsc,tstamp,quirks);
 
-        if (p->generic)
-          printf(":%s:?] ",p->os);
-        else
-          printf("] ");
+        //if (p->generic)
+          //printf(":%s:?] ",p->os);
+        //else
+          //printf("] ");
 
       }
 
@@ -1247,16 +1247,16 @@ continue_search:
 
     }
 
-    if (nat == 1) printf("(NAT!) ");
-      else if (nat == 2) printf("(NAT2!) ");
+    if (nat == 1)// printf("(NAT!) ");
+      else if (nat == 2) //printf("(NAT2!) ");
 
-    if (ecn) printf("(ECN) ");
+    //if (ecn) printf("(ECN) ");
 
     if (tos) {
-      if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
+      //if (tos_desc) printf("[%s] ",tos_desc); else printf("[tos %d] ",tos);
     }
 
-    if (tstamp) //printf("(up: %d hrs) ",tstamp/360000);
+    //if (tstamp) printf("(up: %d hrs) ",tstamp/360000);
 
     if (!no_extra) {
       a=(_u8*)&dst;
