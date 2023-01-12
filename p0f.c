@@ -1116,7 +1116,7 @@ continue_fuzzy:
 
       if (!no_extra && !p->no_detail) {
 	a=(_u8*)&dst;
-        if (!mode_oneline) //printf("\n  ");
+        if (!mode_oneline) printf("\n  ");
 
         // if (fuzzy_now) 
         //   printf("-> %d.%d.%d.%d%s:%d (link: %s)",
