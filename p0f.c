@@ -152,7 +152,7 @@ _u32 file_cksum;
 
 
 static void die_nicely(_s32 sig) {
-  if (sig) debug("+++ Exiting on signal %d +++\n",sig);
+  //if (sig) debug("+++ Exiting on signal %d +++\n",sig);
   if (pt) pcap_close(pt);
   if (dumper) pcap_dump_close(dumper);
 
@@ -161,10 +161,11 @@ static void die_nicely(_s32 sig) {
     
     r /= (time(0) - st_time);
 
-    debug("[+] Average packet ratio: %0.2f per minute",r);
+    //debug("[+] Average packet ratio: %0.2f per minute",r);
 
     if (use_cache || find_masq)
-      debug(" (cache: %0.2f seconds).\n",query_cache * 60 / r);
+      (void)0;
+      //debug(" (cache: %0.2f seconds).\n",query_cache * 60 / r);
     else
     debug(".\n");
   }
@@ -225,7 +226,7 @@ static void set_header_len(_u32 type) {
 #endif
 
     default:
-      debug("[!] WARNING: Unknown datalink type %d, assuming no header.\n",type);
+      //debug("[!] WARNING: Unknown datalink type %d, assuming no header.\n",type);
       break;
 
   }
@@ -296,8 +297,8 @@ static void collide(_u32 id) {
 
   if (sig[id].ttl % 32 && sig[id].ttl != 255 && sig[id].ttl % 30) {
     problems=1;
-    debug("[!] Unusual TTL (%d) for signature '%s %s' (line %d).\n",
-          sig[id].ttl,sig[id].os,sig[id].desc,sig[id].line);
+    //debug("[!] Unusual TTL (%d) for signature '%s %s' (line %d).\n",
+    //      sig[id].ttl,sig[id].os,sig[id].desc,sig[id].line);
   }
 
   for (i=0;i<id;i++) {
@@ -305,8 +306,8 @@ static void collide(_u32 id) {
     if (!strcmp(sig[i].os,sig[id].os) && 
         !strcmp(sig[i].desc,sig[id].desc)) {
       problems=1;
-      debug("[!] Duplicate signature name: '%s %s' (line %d and %d).\n",
-            sig[i].os,sig[i].desc,sig[i].line,sig[id].line);
+      //debug("[!] Duplicate signature name: '%s %s' (line %d and %d).\n",
+      //      sig[i].os,sig[i].desc,sig[i].line,sig[id].line);
     }
 
     /* If TTLs are sufficiently away from each other, the risk of
@@ -488,10 +489,10 @@ do_const:
       if (sig[id].opt[j] ^ sig[i].opt[j]) goto reloop;
 
     problems=1;
-    debug("[!] Signature '%s %s' (line %d)\n"
-          "    is already covered by '%s %s' (line %d).\n",
-          sig[id].os,sig[id].desc,sig[id].line,sig[i].os,sig[i].desc,
-          sig[i].line);
+    // debug("[!] Signature '%s %s' (line %d)\n"
+    //       "    is already covered by '%s %s' (line %d).\n",
+    //       sig[id].os,sig[id].desc,sig[id].line,sig[i].os,sig[i].desc,
+    //       sig[i].line);
 
 reloop:
 
@@ -729,11 +730,13 @@ reparse_ptr:
   }
 #endif /* DEBUG_HASH */
 
-  if (check_collide && !problems) 
-    debug("[+] Signature collision check successful.\n");
+  if (check_collide && !problems)
+    (void)0; 
+    //debug("[+] Signature collision check successful.\n");
 
   if (!sigcnt)
-    debug("[!] WARNING: no signatures loaded from config file.\n");
+    (void)0; 
+    //debug("[!] WARNING: no signatures loaded from config file.\n");
 
 }
 
@@ -1320,7 +1323,7 @@ static void parse(_u8* none, struct pcap_pkthdr *pph, _u8* packet) {
   if ((_u8*)(iph + 1) > end_ptr) return;
 
   if ( ((iph->ihl & 0x40) != 0x40) || iph->proto != IPPROTO_TCP) {
-    debug("[!] WARNING: Non-IP packet received. Bad header_len!\n");
+    //debug("[!] WARNING: Non-IP packet received. Bad header_len!\n");
     return;
   }
 
@@ -1621,15 +1624,15 @@ int main(int argc,char** argv) {
         if (pcap_findalldevs(&alldevs, ebuf) == -1)
 	  fatal("pcap_findalldevs: %s\n", ebuf);
 
-      debug("\nInterface\tDevice\t\tDescription\n"
-            "-------------------------------------------\n");
+      // debug("\nInterface\tDevice\t\tDescription\n"
+      //       "-------------------------------------------\n");
 
-      for(i=1,d=alldevs;d;d=d->next,i++) {
-        debug("%d %s",i, d->name);
-        if (d->description)
-	  debug("\t%s",d->description);
- 	debug("\n");
-      }
+  //     for(i=1,d=alldevs;d;d=d->next,i++) {
+  //       debug("%d %s",i, d->name);
+  //       if (d->description)
+	//   debug("\t%s",d->description);
+ 	// debug("\n");
+  //     }
       exit(1);
       break;
 
@@ -1641,6 +1644,8 @@ int main(int argc,char** argv) {
   if (!use_cache && port0_wild) fatal("-0 requires -Q (query mode).\n");
 
   if (use_logfile && !add_timestamp) add_timestamp = 1;
+
+  if (!add_timestamp) add_timestamp = 1;
 
   if (use_iface && use_dump)
     fatal("-s and -i are mutually exclusive.\n");
@@ -1654,8 +1659,9 @@ int main(int argc,char** argv) {
 
 #ifdef DEBUG_EXTRAS
   if (mode_oneline || no_known || no_unknown || no_extra)
-    debug("[!] WARNING: compiled with DEBUG_EXTRAS, -l, -K, -U, -N not "
-          "compatible.\n");
+    (void)0; 
+    // debug("[!] WARNING: compiled with DEBUG_EXTRAS, -l, -K, -U, -N not "
+    //       "compatible.\n");
 #endif
 
   if (find_masq || use_cache)
@@ -1668,14 +1674,16 @@ int main(int argc,char** argv) {
     fatal("-d requires -o.\n");
 
   if (!no_banner) {
-    debug("p0f - passive os fingerprinting utility, version " VER "\n"
-          "(C) M. Zalewski <lcamtuf@dione.cc>, W. Stearns <wstearns@pobox.com>\n");  
+    // debug("p0f - passive os fingerprinting utility, version " VER "\n"
+    //       "(C) M. Zalewski <lcamtuf@dione.cc>, W. Stearns <wstearns@pobox.com>\n");  
 #ifdef WIN32
-    debug("WIN32 port (C) M. Davis <mike@datanerds.net>, K. Kuehl <kkuehl@cisco.com>\n");
+    (void)0; 
+    //debug("WIN32 port (C) M. Davis <mike@datanerds.net>, K. Kuehl <kkuehl@cisco.com>\n");
 #endif /* WIN32 */
 
     if (use_fuzzy && rst_mode)
-      debug("[!] WARNING: It is a bad idea to combine -F and -R.\n");
+      (void)0; 
+      //debug("[!] WARNING: It is a bad idea to combine -F and -R.\n");
 
   }
 
@@ -1754,19 +1762,23 @@ int main(int argc,char** argv) {
   if (pcap_compile(pt, &flt, use_rule, 1, 0))
     if (strchr(use_rule,'(')) {
       pcap_perror(pt,"pcap_compile");
-      debug("See man tcpdump or p0f README for help on bpf filter expressions.\n");
+      //debug("See man tcpdump or p0f README for help on bpf filter expressions.\n");
       exit(1);
     }
 
   if (!no_banner) {
-    debug("p0f: listening (%s) on '%s', %d sigs (%d generic, cksum %08X), rule: '%s'.\n",
-          ack_mode ? "SYN+ACK" : rst_mode ? "RST+" :
-          open_mode ? "OPEN" : "SYN",
-          use_dump?use_dump:use_iface,sigcnt,gencnt,file_cksum,
-          argv[optind]?argv[optind]:"all");
+    // debug("p0f: listening (%s) on '%s', %d sigs (%d generic, cksum %08X), rule: '%s'.\n",
+    //       ack_mode ? "SYN+ACK" : rst_mode ? "RST+" :
+    //       open_mode ? "OPEN" : "SYN",
+    //       use_dump?use_dump:use_iface,sigcnt,gencnt,file_cksum,
+    //       argv[optind]?argv[optind]:"all");
 
-    if (use_cache) debug("[*] Accepting queries at socket %s (timeout: %d s).\n",use_cache,QUERY_TIMEOUT);
-    if (find_masq) debug("[*] Masquerade detection enabled at threshold %d%%.\n",masq_thres);
+    if (use_cache)
+      (void)0; 
+      //debug("[*] Accepting queries at socket %s (timeout: %d s).\n",use_cache,QUERY_TIMEOUT);
+    if (find_masq)
+      (void)0; 
+      //debug("[*] Masquerade detection enabled at threshold %d%%.\n",masq_thres);
     
   }
   
@@ -1798,7 +1810,8 @@ int main(int argc,char** argv) {
     if (!pw) fatal("user %s not found.\n",set_user);
     
     if (use_cache && chown(use_cache,pw->pw_uid,pw->pw_gid)) 
-      debug("[!] Failed to set ownership of query socket.");
+      (void)0; 
+      //debug("[!] Failed to set ownership of query socket.");
  
     if (chdir(pw->pw_dir)) pfatal(pw->pw_dir);
     if (chroot(pw->pw_dir)) pfatal("chroot");
@@ -1914,8 +1927,11 @@ int main(int argc,char** argv) {
   pcap_close(pt);
   if (dumper) pcap_dump_close(dumper);
 
-  if (use_dump) debug("[+] End of input file.\n");
-    else fatal("Network is down.\n");
+  if (use_dump)
+    (void)0; 
+    //debug("[+] End of input file.\n");
+  else
+    fatal("Network is down.\n");
 
   return 0;
 

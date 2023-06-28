@@ -42,7 +42,7 @@ int main(int argc,char** argv) {
   _s32 sock;
   
   if (argc != 6) {
-    debug("Usage: %s p0f_socket src_ip src_port dst_ip dst_port\n",
+    //debug("Usage: %s p0f_socket src_ip src_port dst_ip dst_port\n",
 	  argv[0]);
     exit(1);
   }

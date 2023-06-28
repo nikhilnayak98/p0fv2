@@ -39,7 +39,7 @@ int main(int argc,char** argv) {
   _s32 sock;
 
   if (argc != 2) {
-    debug("Usage: %s p0f_socket\n", argv[0]);
+    //debug("Usage: %s p0f_socket\n", argv[0]);
     exit(1);
   }
 
@@ -61,7 +61,7 @@ int main(int argc,char** argv) {
   if (read(sock,&s,sizeof(s)) != sizeof(s))
     fatal("Response read error (timeout?).\n");
 
-  debug("[+] Sufficient socket permissions.\n");
+  //debug("[+] Sufficient socket permissions.\n");
 
   if (s.magic != QUERY_MAGIC)
     fatal("Bad response magic.\n");
@@ -72,17 +72,17 @@ int main(int argc,char** argv) {
   if (s.type != RESP_STATUS)
     fatal("P0f did not honor our query.\n");
 
-  debug("[+] Got correct p0f status response.\n");
-  debug("[i] p0f version          : %s\n", s.version);
-  debug("[i] p0f mode             : %s\n", 
-    s.mode=='S'?"SYN":(s.mode=='A'?"SYN+ACK":(s.mode=='R'?"RST":(s.mode=='O'?"stray":"unknown"))));
-  debug("[i] p0f fp file checksum : 0x%08x\n", s.fp_cksum);
-  debug("[i] received packets     : %u\n", s.packets);
-  debug("[i] matched packets      : %u\n", s.matched);
-  debug("[i] p0f query cache size : %u\n", s.cache);
-  debug("[i] cache queries        : %u\n", s.queries);
-  debug("[i] cache misses         : %u\n", s.cmisses);
-  debug("[i] p0f process uptime   : %u seconds\n", s.uptime);
+  // debug("[+] Got correct p0f status response.\n");
+  // debug("[i] p0f version          : %s\n", s.version);
+  // debug("[i] p0f mode             : %s\n", 
+  //   s.mode=='S'?"SYN":(s.mode=='A'?"SYN+ACK":(s.mode=='R'?"RST":(s.mode=='O'?"stray":"unknown"))));
+  // debug("[i] p0f fp file checksum : 0x%08x\n", s.fp_cksum);
+  // debug("[i] received packets     : %u\n", s.packets);
+  // debug("[i] matched packets      : %u\n", s.matched);
+  // debug("[i] p0f query cache size : %u\n", s.cache);
+  // debug("[i] cache queries        : %u\n", s.queries);
+  // debug("[i] cache misses         : %u\n", s.cmisses);
+  // debug("[i] p0f process uptime   : %u seconds\n", s.uptime);
 
   shutdown(sock,2);
   close(sock);
